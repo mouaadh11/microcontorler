@@ -57,8 +57,3 @@ def get_data(sensor, unblockedValue):
             isthere = check_wear(ir_reading, unblockedValue, isthere)
             if isthere:
                 return ir_reading, red_reading
-
-
-        
-
-

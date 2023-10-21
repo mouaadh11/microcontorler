@@ -1,7 +1,7 @@
 # main.py
 import time
-import sensor
-import connection
+#import sensor
+#import connection
 
 
 def main():
