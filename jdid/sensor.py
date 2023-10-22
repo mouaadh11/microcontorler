@@ -48,12 +48,32 @@ def setUp():
 def get_data(sensor, unblockedValue):
     
     # Main loop
+    RATE_SIZE = 4  
+    rates = [0] * RATE_SIZE 
+    rateSpot = 0
+    lastBeat = 0
+    beatsPerMinute = 0
+    beatAvg = 0
     while True:
         isthere = False
         sensor.check()
         if sensor.available():
             ir_reading = sensor.pop_ir_from_storage()
             red_reading = sensor.pop_red_from_storage()
+            #calculate heart rate
+            delta = ticks_diff(ticks_ms(), lastBeat)
+            lastBeat = ticks_ms()
+            beatsPerMinute = 60 / (delta / 1000.0)
+            if beatsPerMinute < 255 and beatsPerMinute > 20:
+                rates[rateSpot] = beatsPerMinute
+                rateSpot += 1
+                if rateSpot == RATE_SIZE:
+                    rateSpot = 0
+                beatAvg = 0
+                for x in range(0, RATE_SIZE):
+                    beatAvg += rates[x]
+                beatAvg /= RATE_SIZE
             isthere = check_wear(ir_reading, unblockedValue, isthere)
             if isthere:
+
                 return ir_reading, red_reading

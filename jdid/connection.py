@@ -2,7 +2,7 @@ import urequests
 import network
 import time
 
-SERVER_URL = 'http://192.168.1.41:3000/data'
+SERVER_URL = 'http://192.168.169.90:3000/data'
 
 def do_connect(ssid: str, password: str):
     wlan = network.WLAN(network.STA_IF)
