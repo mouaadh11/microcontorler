@@ -1,20 +1,20 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-
+const express = require('express');
+const multer = require('multer');
 const app = express();
-const port = 3000; // Use your desired port
+const upload = multer({ dest: 'uploads/' });
 
-app.use(bodyParser.json());
+app.post('/upload_csv', upload.single('file'), (req, res) => {
+  // Set the appropriate response headers
+  res.header('Content-Type', 'text/csv');
+  res.header('Content-Disposition', `attachment; filename=${req.file.originalname}`);
 
-app.post("/data", (req, res) => {
-  const data = req.body;
-  console.log("Received data:", data);
+  // Process the uploaded CSV file
+  // ...
 
-  // Process and save the data as needed
-
-  res.status(200).send("Data received successfully");
+  // Send a response
+  res.send('File uploaded successfully');
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+app.listen(3000, () => {
+  console.log('Express server is running on port 3000');
 });
