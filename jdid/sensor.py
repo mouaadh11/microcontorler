@@ -1,6 +1,6 @@
 from machine import SoftI2C, Pin
 from utime import sleep, ticks_diff, ticks_ms
-from max30102 import MAX30102, MAX30105_PULSE_AMP_MEDIUM, MAX30105_PULSE_AMP_LOW, MAX30105_PULSE_AMP_HIGH
+from max30102 import MAX30102, MAX30105_PULSE_AMP_MEDIUM, MAX30105_PULSE_AMP_LOW, MAX30105_PULSE_AMP_HIGH,MAX30105_PULSE_AMP_LOWEST
 def check_wear(ir_reading, unblockedValue, isthere):
     currentDelta = ir_reading - unblockedValue
     #print ("currentDelta = ", currentDelta)
@@ -28,8 +28,8 @@ def setUp():
         print("Sensor connected and recognized.")
     # Set up the sensor
     sensor.setup_sensor()
-    sensor.set_pulse_amplitude_red(MAX30105_PULSE_AMP_MEDIUM)  # Turn off Red LED
-    sensor.set_pulse_amplitude_it(MAX30105_PULSE_AMP_MEDIUM)   # Turn off IR LED
+    sensor.set_pulse_amplitude_red(MAX30105_PULSE_AMP_LOWEST)  # Turn off Red LED
+    sensor.set_pulse_amplitude_it(MAX30105_PULSE_AMP_LOWEST)   # Turn off IR LED
     # Take an average of IR readings at power up
     unblockedValue = 0
     i = 0
