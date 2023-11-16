@@ -7,6 +7,8 @@ import connection
 
 my_ssid = 'D-link'
 my_pass = '0661658250'
+#my_ssid = 'Galaxy'
+#my_pass = 'abcdefgh'
 connection.do_connect(my_ssid, my_pass)
 try:
     from max30102 import MAX30102

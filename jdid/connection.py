@@ -3,7 +3,7 @@ import network
 import time
 import os
 
-SERVER_URL = 'http://192.168.1.42:3000/upload'
+SERVER_URL = 'http://192.168.45.90:3000/upload'
 
 def do_connect(ssid: str, password: str):
     wlan = network.WLAN(network.STA_IF)

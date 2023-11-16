@@ -1,12 +1,12 @@
 from machine import SoftI2C, Pin
 from utime import sleep, ticks_diff, ticks_ms
-from max30102 import MAX30102, MAX30105_PULSE_AMP_MEDIUM, MAX30105_PULSE_AMP_LOW, MAX30105_PULSE_AMP_HIGH,MAX30105_PULSE_AMP_LOWEST
+from max30102 import MAX30102, MAX30105_PULSE_AMP_MEDIUM, MAX30105_PULSE_AMP_LOW, MAX30105_PULSE_AMP_HIGH, MAX30105_PULSE_AMP_LOWEST
 def check_wear(ir_reading, unblockedValue, isthere):
     currentDelta = ir_reading - unblockedValue
     #print ("currentDelta = ", currentDelta)
-    if currentDelta > 7000 and not isthere:
+    if currentDelta > 2500 and not isthere:
         isthere = True
-    elif currentDelta < 7000 and isthere:
+    elif currentDelta <2500  and isthere:
         isthere = False
     return isthere
 def setUp():
@@ -28,8 +28,14 @@ def setUp():
         print("Sensor connected and recognized.")
     # Set up the sensor
     sensor.setup_sensor()
-    sensor.set_pulse_amplitude_red(MAX30105_PULSE_AMP_LOWEST)  # Turn off Red LED
-    sensor.set_pulse_amplitude_it(MAX30105_PULSE_AMP_LOWEST)   # Turn off IR LED
+    # Set the number of samples to be averaged by the chip
+    SAMPLE_AVG = 1  # Options: 1, 2, 4, 8, 16, 32
+    sensor.set_fifo_average(SAMPLE_AVG)
+    # Set the sample rate
+    SAMPLE_RATE = 400  # Options: 50, 100, 200, 400, 800, 1000, 1600, 3200
+    sensor.set_sample_rate(SAMPLE_RATE)
+    sensor.set_pulse_amplitude_red(MAX30105_PULSE_AMP_MEDIUM)  # Turn off Red LED
+    sensor.set_pulse_amplitude_it(MAX30105_PULSE_AMP_MEDIUM)   # Turn off IR LED
     # Take an average of IR readings at power up
     unblockedValue = 0
     i = 0
@@ -48,12 +54,12 @@ def setUp():
 def get_data(sensor, unblockedValue):
     # Main loop
     while True:
-        isthere = False
+        isthere = True
         sensor.check()
         if sensor.available():
             ir_reading = sensor.pop_ir_from_storage()
             red_reading = sensor.pop_red_from_storage()
             
-            isthere = check_wear(ir_reading, unblockedValue, isthere)
+            #isthere = check_wear(ir_reading, unblockedValue, isthere)
             if isthere:
                 return ir_reading, red_reading
