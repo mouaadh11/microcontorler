@@ -14,11 +14,12 @@
 # This driver aims at giving almost full access to Maxim MAX30102 functionalities.
 #                                                                          n-elia
 
+import uerrno
 from machine import SoftI2C
 from ustruct import unpack
 from utime import sleep_ms, ticks_diff, ticks_ms
 
-from max30102.circular_buffer import CircularBuffer
+from circular_buffer import CircularBuffer
 
 # I2C address (7-bit address)
 MAX3010X_I2C_ADDRESS = 0x57  # Right-shift of 0xAE, 0xAF
@@ -289,7 +290,7 @@ class MAX30102(object):
     # Power states methods
     def shutdown(self):
         # Put IC into low power mode (datasheet pg. 19)
-        # During shutdown the IC will continue to respond to I2C commands but
+        # During shutdown the IC will continue to respond to I2C commands but 
         # will not update with or take new readings (such as temperature).
         self.set_bitmask(MAX30105_MODE_CONFIG, MAX30105_SHUTDOWN_MASK, MAX30105_SHUTDOWN)
 
@@ -300,8 +301,8 @@ class MAX30102(object):
         # LED Configuration
 
     def set_led_mode(self, LED_mode):
-        # Set LED mode: select which LEDs are used for sampling
-        # Options: RED only, RED + IR only, or ALL (datasheet pag. 19)
+        # Set LED mode: select which LEDs are used for sampling 
+        # Options: RED only, RED + IR only, or ALL (datasheet pag. 19)        
         if LED_mode == 1:
             self.set_bitmask(MAX30105_MODE_CONFIG, MAX30105_MODE_MASK, MAX30105_MODE_RED_ONLY)
         elif LED_mode == 2:
@@ -317,7 +318,7 @@ class MAX30102(object):
         if LED_mode > 1:
             self.enable_slot(2, SLOT_IR_LED)
         if LED_mode > 2:
-            self.enable_slot(3, SLOT_GREEN_LED)
+            self.enable_slot(3, SLOT_GREEN_LED) 
 
         # Store the LED mode used to control how many bytes to read from
         # FIFO buffer in multiLED mode: a sample is made of 3 bytes
@@ -347,7 +348,7 @@ class MAX30102(object):
         # Sample rate: select the number of samples taken per second.
         # Options: 50, 100, 200, 400, 800, 1000, 1600, 3200
         # Note: in theory, the resulting acquisition frequency for the end user
-        # is sampleRate/sampleAverage. However, it is worth testing it before
+        # is sampleRate/sampleAverage. However, it is worth testing it before 
         # assuming that the sensor can effectively sustain that frequency
         # given its configuration.
         if sample_rate == 50:
@@ -478,7 +479,7 @@ class MAX30102(object):
 
     def set_fifo_almost_full(self, number_of_samples):
         # Set number of samples to trigger the almost full interrupt (page 18)
-        # Power on default is 32 samples. Note it is reverse: 0x00 is
+        # Power on default is 32 samples. Note it is reverse: 0x00 is 
         # 32 samples, 0x0F is 17 samples
         self.set_bitmask(MAX30105_FIFO_CONFIG, MAX30105_A_FULL_MASK, number_of_samples)
 
@@ -535,7 +536,7 @@ class MAX30102(object):
 
     # Time slots management for multi-LED operation mode
     def enable_slot(self, slot_number, device):
-        # In multi-LED mode, each sample is split into up to four time slots,
+        # In multi-LED mode, each sample is split into up to four time slots, 
         # SLOT1 through SLOT4. These control registers determine which LED is
         # active in each time slot. (datasheet pag 22)
         # Devices are SLOT_RED_LED or SLOT_RED_PILOT (proximity)
@@ -640,7 +641,7 @@ class MAX30102(object):
     # (useless - for comparison purposes only)
     def next_sample(self):
         if self.available():
-            # With respect to the SparkFun library, using a deque object
+            # With respect to the SparkFun library, using a deque object 
             # allows us to avoid manually advancing of the tail
             return True
 
